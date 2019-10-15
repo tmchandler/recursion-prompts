@@ -157,10 +157,23 @@ var palindrome = function (string) {
 // modulo(17,5) // 2
 // modulo(22,6) // 4
 var modulo = function (x, y) {
-    if (x < y) {
-        return x;
+    if(x < 0 && y < 0) {
+        return -modulo(-x, -y);
+    } else if (x < 0) {
+        return -modulo(-x, y);
+    } else if (y < 0) {
+        return modulo(x, -y);
+    } else if (x === 0 && y === 0) {
+        return NaN;
     }
 
+    if(x === y) {
+        return 0;
+    } else if(x < y) {
+        return x;
+    } else {
+        return modulo(x - y, y);
+    }
 };
 
 // 12. Write a function that multiplies two numbers without using the * operator or
@@ -171,15 +184,11 @@ var multiply = function (x, y) {
     }
 
     if (x < 0 && y < 0) {
-        x = x - x - x;
-        y = y - y - y;
-        return -x + multiply(x, y - 1);
+        return -x + multiply(-x, -y - 1);
     } else if (y < 0) {
-        y = y - y - y;
-        return x + multiply(x, y - 1);
+        return -(x + multiply(x, -y - 1));
     } else if (x < 0) {
-        x = x - x - x;
-        return -x + multiply(x, y - 1);
+        return -(-x + multiply(-x, y - 1));
     } else {
         return x + multiply(x, y - 1);
     }
@@ -188,6 +197,35 @@ var multiply = function (x, y) {
 // 13. Write a function that divides two numbers without using the / operator or
 // Math methods to arrive at an approximate quotient (ignore decimal endings).
 var divide = function (x, y) {
+    var count = 0;
+
+    if(y === 0) {
+        return NaN;
+    }
+
+    if(x === 0) {
+        return 0;
+    }
+    
+    if(x === y) {
+        return 1;
+    }
+
+    if(x < 0 && y < 0) {
+        count = divide(-x, -y);
+    } else if(x < 0 && -x > y) {
+        count = divide(-x, y);
+    } else if(y < 0 && x > -y) {
+        count = divide(x, -y);
+    } else {
+        if(x > y) {
+            count = 1 + divide(x - y, y);
+        } else {
+            return 0;
+        }
+    }
+
+    return count;
 };
 
 // 14. Find the greatest common divisor (gcd) of two positive numbers. The GCD of two
@@ -196,6 +234,30 @@ var divide = function (x, y) {
 // http://www.cse.wustl.edu/~kjg/cse131/Notes/Recursion/recursion.html
 // https://www.khanacademy.org/computing/computer-science/cryptography/modarithmetic/a/the-euclidean-algorithm
 var gcd = function (x, y) {
+    if(x < 0 || y < 0) {
+        return null;
+    }
+
+    if(x % y === 0) {
+        return y;
+    }
+
+    if(y % x === 0) {
+        return x;
+    }
+
+    var bestGCD;
+    var counter = 0;
+    while(counter < x && counter < y) {
+        if(x % counter === 0 && y % counter === 0) {
+            bestGCD = counter;
+            counter++;
+        } else {
+            counter++;
+        }
+    }
+
+    return bestGCD;
 };
 
 // 15. Write a function that compares each character of two strings and returns true if
@@ -203,6 +265,11 @@ var gcd = function (x, y) {
 // compareStr('house', 'houses') // false
 // compareStr('tomato', 'tomato') // true
 var compareStr = function (str1, str2) {
+    if(str1 === str2) {
+        return true;
+    } else {
+        return false;
+    }
 };
 
 // 16. Write a function that accepts a string and creates an array where each letter
