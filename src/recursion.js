@@ -86,7 +86,7 @@ var range = function (x, y) {
     } else if (x > y + 1) {
         array.push(x - 1);
         return array = array.concat(range(x - 1, y));
-    } 
+    }
 
     return array;
 };
@@ -157,7 +157,7 @@ var palindrome = function (string) {
 // modulo(17,5) // 2
 // modulo(22,6) // 4
 var modulo = function (x, y) {
-    if(x < 0 && y < 0) {
+    if (x < 0 && y < 0) {
         return -modulo(-x, -y);
     } else if (x < 0) {
         return -modulo(-x, y);
@@ -167,9 +167,9 @@ var modulo = function (x, y) {
         return NaN;
     }
 
-    if(x === y) {
+    if (x === y) {
         return 0;
-    } else if(x < y) {
+    } else if (x < y) {
         return x;
     } else {
         return modulo(x - y, y);
@@ -199,26 +199,26 @@ var multiply = function (x, y) {
 var divide = function (x, y) {
     var count = 0;
 
-    if(y === 0) {
+    if (y === 0) {
         return NaN;
     }
 
-    if(x === 0) {
+    if (x === 0) {
         return 0;
     }
-    
-    if(x === y) {
+
+    if (x === y) {
         return 1;
     }
 
-    if(x < 0 && y < 0) {
+    if (x < 0 && y < 0) {
         count = divide(-x, -y);
-    } else if(x < 0 && -x > y) {
+    } else if (x < 0 && -x > y) {
         count = divide(-x, y);
-    } else if(y < 0 && x > -y) {
+    } else if (y < 0 && x > -y) {
         count = divide(x, -y);
     } else {
-        if(x > y) {
+        if (x > y) {
             count = 1 + divide(x - y, y);
         } else {
             return 0;
@@ -234,30 +234,26 @@ var divide = function (x, y) {
 // http://www.cse.wustl.edu/~kjg/cse131/Notes/Recursion/recursion.html
 // https://www.khanacademy.org/computing/computer-science/cryptography/modarithmetic/a/the-euclidean-algorithm
 var gcd = function (x, y) {
-    if(x < 0 || y < 0) {
+    if (x < 0 || y < 0) {
         return null;
     }
 
-    if(x % y === 0) {
+    if (x % y === 0) {
         return y;
     }
 
-    if(y % x === 0) {
+    if (y % x === 0) {
         return x;
     }
 
-    var bestGCD;
-    var counter = 0;
-    while(counter < x && counter < y) {
-        if(x % counter === 0 && y % counter === 0) {
-            bestGCD = counter;
-            counter++;
-        } else {
-            counter++;
-        }
-    }
+    var originalX = x;
+    var originalY = y;
 
-    return bestGCD;
+    if (x > y) {
+        return gcd(x, y - 1);
+    } else {
+        return gcd(x - 1, y);
+    }
 };
 
 // 15. Write a function that compares each character of two strings and returns true if
@@ -265,8 +261,10 @@ var gcd = function (x, y) {
 // compareStr('house', 'houses') // false
 // compareStr('tomato', 'tomato') // true
 var compareStr = function (str1, str2) {
-    if(str1 === str2) {
+    if (str1.length === 0 && str2.length === 0) {
         return true;
+    } else if (str1[0] === str2[0]) {
+        return (true && compareStr(str1.slice(1), str2.slice(1)));
     } else {
         return false;
     }
@@ -275,16 +273,40 @@ var compareStr = function (str1, str2) {
 // 16. Write a function that accepts a string and creates an array where each letter
 // occupies an index of the array.
 var createArray = function (str) {
+    if (str.length === 0) {
+        return [];
+    } else {
+        var charArr = [];
+        charArr.push(str[0]);
+        return charArr.concat(createArray(str.slice(1)));
+    }
 };
 
 // 17. Reverse the order of an array
 var reverseArr = function (array) {
+    if (array.length === 0) {
+        return [];
+    } else {
+        var mover = array.pop();
+        var reversed = [];
+        reversed.unshift(mover);
+    }
+
+    return reversed.concat(reverseArr(array));
 };
 
 // 18. Create a new array with a given value and length.
 // buildList(0,5) // [0,0,0,0,0]
 // buildList(7,3) // [7,7,7]
 var buildList = function (value, length) {
+    if(length === 0) {
+        return [];
+    } else {
+        var arr = [];
+        arr.push(value);
+    }
+
+    return arr.concat(buildList(value, length - 1));
 };
 
 // 19. Implement FizzBuzz. Given integer n, return an array of the string representations of 1 to n.
@@ -293,6 +315,24 @@ var buildList = function (value, length) {
 // For numbers which are multiples of both three and five, output “FizzBuzz” instead of the number.
 // fizzBuzz(5) // ['1','2','Fizz','4','Buzz']
 var fizzBuzz = function (n) {
+    var fizzArr = [];
+    if (n === 0) {
+        return [];
+    }
+
+    if (n % 3 === 0 && n % 5 === 0) {
+        fizzArr.push('FizzBuzz');
+        return fizzBuzz(n - 1).concat(fizzArr);
+    } else if (n % 3 === 0) {
+        fizzArr.push('Fizz');
+        return fizzBuzz(n - 1).concat(fizzArr);
+    } else if (n % 5 === 0) {
+        fizzArr.push('Buzz');
+        return fizzBuzz(n - 1).concat(fizzArr);
+    } else {
+        fizzArr.push(n.toString());
+        return fizzBuzz(n - 1).concat(fizzArr);
+    }
 };
 
 // 20. Count the occurence of a value in a list.
